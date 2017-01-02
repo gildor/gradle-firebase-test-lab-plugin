@@ -1,5 +1,5 @@
 group 'ru.gildor.gradle.firebase.testlab'
-version '1.0-SNAPSHOT'
+version '0.1-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.0.5-2'
@@ -8,6 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+        //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -17,7 +18,7 @@ apply plugin: 'kotlin'
 apply plugin: 'maven'
 
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.6
 
 repositories {
     jcenter()

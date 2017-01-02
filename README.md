@@ -7,15 +7,61 @@ WARNING! It's just draft of future plugin, not production or even beta ready
 ## Configuration
 
 ```groovy
+//Add dependency to your build script
+buildscript {
+    dependencies {
+        classpath "ru.gildor.gradle.firebase.testlab:firebase-test-lab:$TEST_LAB_PLUGIN_VERSION"
+    }
+}
+
+//Apply plugin in your target Android projet
 apply plugin: 'firebase-test-lab'
 
+//Configure plugin
 firebaseTestLab {
-    gcloudPath = "/Path/to/google-cloud-sdk/bin/"
-    bucketName = "glcoud_storage_bucket_name"
+    // [REQUIRED] Path to Google Cloud SDK CLI tools - https://cloud.google.com/sdk/gcloud/
+    gcloudPath = "/Library/google-cloud-sdk/bin/"
+    // [REQUIRED] Google Cloud Storage bucket name to keep test results
+    bucketName = "android_ci"
+    // `false` by default
+    ignoreFailures = false
+    // Plugin will create tasks not only for each your build variant, 
+    // but also without dependency on current project app build, 
+    // this allow you to run tests with configured matrices for any pair of apk and test apk
+    // You must pass path to apk and testApk as gradle build parameters -Papk and -PtestApk. false by default 
+    enableVariantLessTasks = false
+    // Configuration that allows to download test result artifacts to build dir
+    copyArtifact {
+        // Test results in junit XML result format. true by default
+        junit = true
+        // File with Android logs. false by default
+        logcat = false
+        // Video of test. false by default
+        video = false
+        // Test results in test lab format (plain text log file)
+        instrumentation = false
+    }
+    // Configuration of your matrices. Plugin creates 2 tasks for each matrix (for instrumentation and robo tests)
     matrices {
+        // Name of matrix (test configuration)
+        // How to choose configuration:
+        // https://firebase.google.com/docs/test-lab/command-line#choosing_test_configurations
         nexus7 {
-            androidApiLevels = [21]
+            // [REQUIRED] API level of devices
+            androidApiLevels = [19, 21]
+            // [REQUIRED] Names of devices.
             deviceIds = ["flo"]
+            // Locale. "en" by default
+            locales = ["en"]
+            // Orientation of device. Can be `portrait` or `landscape`. Portrait by default
+            orientations = ["portrait", "landscape"]
+            // Maximum test length. No timeout by default
+            timeoutSec = 0
+        }
+        // Example of minimal matrix configuration for 1 device (Nexus 5 with API Level 21)
+        nexus5 {
+            androidApiLevels = [21]
+            deviceIds = ["hammerhead"]
         }
     }
 }
@@ -32,14 +78,8 @@ firebaseTestLab {
 ```
 
 ## TODO:
-- Generate task for each matrix
-- Settings validation
-- Timeout configuration
-- Maybe some additional settings from gcloud CLI
-- Support of robo tests (2 ways: set of tasks for roboto test, or maybe more clean just to set test type to matrix)
-- Find way to avoid gcloud CLI and use pure Java API to upload files (need investigation) and download results (definitely possible)
 - Sample app
-- Download test artifacts: logcat, screenshot, videos (config DSL for result)
 - Tests
+- Maybe some additional settings from gcloud CLI
+- Find way to avoid gcloud CLI and use pure Java API to upload files (need investigation) and download copyArtifact (definitely possible)
 - Task to print possible matrix settings from gcloud
-- Improve logging (use gradle logger instead `println()`)
