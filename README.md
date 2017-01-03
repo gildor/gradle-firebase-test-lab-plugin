@@ -72,10 +72,15 @@ firebaseTestLab {
 - Configured [Firebase project](https://console.firebase.google.com/) with corresponding [billing plan](https://firebase.google.com/pricing/)
 
 ## Run tests
-
+To run tests you should use one of plugin tasks
 ```
-./gradlew testFreeDebugTestLab
+./gradlew test[build variant][matrix name][test type]TestLab
 ```
+For example:
+```
+./gradlew testDebugNexus5InstrumentationTestLab
+```
+Will be started instrumentation test for debug build (no flavor) for matrix with name `nexus5`
 
 ## TODO:
 - Sample app
