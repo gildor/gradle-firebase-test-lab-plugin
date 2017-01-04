@@ -28,6 +28,7 @@ class GcloudCliRunner(
                 beta test android run
                 --format json
                 --results-bucket $bucket
+                --type $type
                 --locales ${matrix.locales.joinArgs()},
                 --os-version-ids ${matrix.androidApiLevels.joinArgs()}
                 --orientations ${matrix.orientations.joinArgs()}
@@ -35,16 +36,16 @@ class GcloudCliRunner(
                 --app ${apks.apk}
                 ${if (type == TestType.instrumentation) "--test ${apks.testApk}" else "" }
                 ${if (matrix.timeoutSec > 0) "--timeoutSec ${matrix.timeoutSec}s" else ""}
-                --type $type
     """.asCommand())
 
     override fun start(): TestResult {
         val process = processBuilder.start()
+        logger.debug(processBuilder.command().joinToString(" "))
         var resultDir: String? = null
         process.errorStream.bufferedReader().forEachLine {
             logger.lifecycle(it)
             if (it.contains(bucket)) {
-                resultDir = "$bucket\\/(.*)\\/".toRegex().find(it)?.groups?.get(0)?.value
+                resultDir = "$bucket\\/(.*)\\/".toRegex().find(it)?.groups?.get(1)?.value
                 if (resultDir == null) {
                     logger.error("Cannot parse output to get result dir name. Result artifacts will not be downloaded")
                 } else {

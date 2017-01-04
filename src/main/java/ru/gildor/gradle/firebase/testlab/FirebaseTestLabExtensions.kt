@@ -73,6 +73,6 @@ class BuildParameterApkSource(private val project: Project) : ApkSource {
 }
 
 internal class VariantApkSource(variant: TestVariant) : ApkSource {
-    override val apk: File = variant.outputs.first().outputFile
-    override val testApk: File = variant.testedVariant.outputs.first().outputFile
+    override val apk: File = variant.testedVariant.outputs.first().outputFile
+    override val testApk: File = variant.outputs.first().outputFile
 }

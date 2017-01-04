@@ -30,10 +30,10 @@ class GcloudCliResultDownloader(
                 val destination = "$destinationDir/$matrixName"
                 val destFile = File(destination)
                 prepareDestination(destFile)
-                destFile.mkdir()
                 downloadResource("$resultDir$resource", destination)
             }
         }
+        logger?.lifecycle("gcloud: Artifacts downloaded")
     }
 
     private fun prepareDestination(destination: File) {
@@ -45,7 +45,7 @@ class GcloudCliResultDownloader(
             }
             destination.deleteRecursively()
         }
-        destination.mkdir()
+        destination.mkdirs()
         if (!destination.exists()) {
             throw GradleException("Cannot create destination dir $destination")
         }
@@ -64,20 +64,14 @@ class GcloudCliResultDownloader(
     private fun getResultDirs(result: TestResult) =
             "${command("gsutil", gcloudPath)} ls gs://$bucket/${result.resultDir}"
                     .startCommand()
+                    .apply {
+                        errorStream.bufferedReader().forEachLine {
+                            logger?.error(it)
+                        }
+                    }
                     .inputStream
                     .bufferedReader()
                     .readLines()
                     .filter { it.endsWith("/") }
 
-}
-
-fun main(args: Array<String>) {
-    GcloudCliResultDownloader(
-            listOf("logcat", "test_result*xml"),
-            File("build/reports/cloudTest").apply { mkdir() },
-            File("/Library/google-cloud-sdk/bin/"),
-            "android_ci",
-            null
-
-    ).downloadResult(TestResult(true, "2016-11-11_16:26:14.673688_pdiU", ""))
 }
