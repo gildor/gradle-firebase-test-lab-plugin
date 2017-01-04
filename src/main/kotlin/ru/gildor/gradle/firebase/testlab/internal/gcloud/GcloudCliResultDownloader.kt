@@ -25,18 +25,17 @@ class GcloudCliResultDownloader(
         //Read result
         getResultDirs(result).forEach { resultDir ->
             logger?.debug("Downloading artifacts from $resultDir")
-            val matrixName = resultDir.split("/").last()
+            val destination = "$destinationDir/${resultDir.split("/").last()}"
+            prepareDestination(destination)
             artifacts.forEach { resource ->
-                val destination = "$destinationDir/$matrixName"
-                val destFile = File(destination)
-                prepareDestination(destFile)
                 downloadResource("$resultDir$resource", destination)
             }
         }
         logger?.lifecycle("gcloud: Artifacts downloaded")
     }
 
-    private fun prepareDestination(destination: File) {
+    private fun prepareDestination(destPath: String) {
+        val destination = File(destPath)
         logger?.debug("gcloud: Preparing destination dir $destination")
         if (destination.exists()) {
             logger?.debug("gcloud: Destination $destination is exists, delete recursively")
@@ -65,9 +64,7 @@ class GcloudCliResultDownloader(
             "${command("gsutil", gcloudPath)} ls gs://$bucket/${result.resultDir}"
                     .startCommand()
                     .apply {
-                        errorStream.bufferedReader().forEachLine {
-                            logger?.error(it)
-                        }
+                        errorStream.bufferedReader().forEachLine { logger?.error(it) }
                     }
                     .inputStream
                     .bufferedReader()
