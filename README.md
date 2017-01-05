@@ -1,8 +1,9 @@
 # Gradle plugin for Firebase Test Lab
 
-This is experimental Gradle plugin for [Firebase Test Lab](https://firebase.google.com/docs/test-lab/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![CircleCI](https://img.shields.io/circleci/project/github/gildor/gradle-firebase-test-lab-plugin/master.svg)](https://circleci.com/gh/gildor/gradle-firebase-test-lab-plugin)
 
-WARNING! It's just draft of future plugin, not production or even beta ready 
+This is experimental Gradle plugin for [Firebase Test Lab](https://firebase.google.com/docs/test-lab/)
 
 ## Configuration
 
@@ -74,7 +75,7 @@ firebaseTestLab {
 ## Run tests
 To run tests you should use one of plugin tasks
 ```
-./gradlew test[build variant][matrix name][test type]TestLab
+./gradlew test<BuildVariant><MatrixName><TestType>TestLab
 ```
 For example:
 ```
