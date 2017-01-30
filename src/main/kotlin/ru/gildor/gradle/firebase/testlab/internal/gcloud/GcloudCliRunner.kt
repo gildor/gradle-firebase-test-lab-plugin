@@ -9,11 +9,11 @@ import ru.gildor.gradle.firebase.testlab.internal.utils.command
 import ru.gildor.gradle.firebase.testlab.internal.utils.joinArgs
 import java.io.File
 
-interface  TestLabRunner {
+internal interface TestLabRunner {
     fun start(): TestResult
 }
 
-class GcloudCliRunner(
+internal class GcloudCliRunner(
         type: TestType,
         val logger: Logger,
         gcloudPath: File?,

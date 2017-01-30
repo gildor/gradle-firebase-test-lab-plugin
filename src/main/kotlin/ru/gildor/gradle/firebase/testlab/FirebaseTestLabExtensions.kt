@@ -3,6 +3,8 @@ package ru.gildor.gradle.firebase.testlab
 import com.android.build.gradle.api.TestVariant
 import groovy.lang.Closure
 import org.gradle.api.Project
+import ru.gildor.gradle.firebase.testlab.internal.Artifacts
+import ru.gildor.gradle.firebase.testlab.internal.ArtifactsImpl
 import java.io.File
 
 open class FirebaseTestLabPluginExtension(private val project: Project) {
@@ -12,7 +14,12 @@ open class FirebaseTestLabPluginExtension(private val project: Project) {
     var ignoreFailures: Boolean = false
     var enableVariantLessTasks = false
     val matrices = project.container(Matrix::class.java)!!
-    val artifacts = Artifacts()
+    internal val artifacts: Artifacts = ArtifactsImpl()
+
+    @Suppress("unused")
+    fun copyArtifact(configure: Artifacts.() -> Unit) {
+        configure(artifacts)
+    }
 
     @Suppress("unused")
     fun matrices(closure: Closure<Matrix>) {
@@ -24,22 +31,6 @@ open class FirebaseTestLabPluginExtension(private val project: Project) {
         project.configure(artifacts, closure)
     }
 }
-
-@Suppress("unused")
-class Artifacts {
-    @get:ArtifactPath("test_result_*.xml")
-    var junit = true
-    @get:ArtifactPath("logcat")
-    var logcat = false
-    @get:ArtifactPath("video.mp4")
-    var video = false
-    @get:ArtifactPath("instrumentation.results")
-    var instrumentation = false
-}
-
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.PROPERTY_GETTER)
-internal annotation class ArtifactPath(val pathWildcard: String)
 
 class Matrix(val name: String) {
     var locales: List<String> = listOf("en")

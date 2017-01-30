@@ -5,6 +5,10 @@
 
 This is experimental Gradle plugin for [Firebase Test Lab](https://firebase.google.com/docs/test-lab/)
 
+## Prerequirements:
+- Installed and inited [gcloud CLI](https://cloud.google.com/sdk/gcloud/)
+- Configured [Firebase project](https://console.firebase.google.com/) with corresponding [billing plan](https://firebase.google.com/pricing/)
+
 ## Configuration
 
 ```groovy
@@ -68,9 +72,33 @@ firebaseTestLab {
 }
 ```
 
-## Prerequirements:
-- Installed and inited [gcloud CLI](https://cloud.google.com/sdk/gcloud/)
-- Configured [Firebase project](https://console.firebase.google.com/) with corresponding [billing plan](https://firebase.google.com/pricing/)
+Example of configuration for [Gradle Script Kotlin](https://github.com/gradle/gradle-script-kotlin) (for version 0.7)
+```kotlin
+import ru.gildor.gradle.firebase.testlab.*
+import ru.gildor.gradle.firebase.testlab.Orientation.*
+
+apply {
+    plugin<FirebaseTestLabPlugin>()
+}
+
+configure<FirebaseTestLabPlugin> {
+    gcloudPath = "/Library/google-cloud-sdk/bin/"
+    bucketName = "android_ci"
+    ignoreFailures = true
+    copyArtifact {
+        junit = true
+        logcat = true
+    }
+    matrices {
+        "nexus7" {
+            androidApiLevels = listOf(19, 21)
+            deviceIds = listOf("flo")
+            locales = listOf("en")
+            orientations = listOf(portrait, landscape)
+        }
+    }
+}
+```
 
 ## Run tests
 To run tests you should use one of plugin tasks

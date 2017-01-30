@@ -9,13 +9,12 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.logging.Logger
+import org.gradle.script.lang.kotlin.closureOf
 import ru.gildor.gradle.firebase.testlab.TestType.instrumentation
 import ru.gildor.gradle.firebase.testlab.TestType.robo
 import ru.gildor.gradle.firebase.testlab.internal.gcloud.GcloudCliResultDownloader
 import ru.gildor.gradle.firebase.testlab.internal.gcloud.GcloudCliRunner
 import ru.gildor.gradle.firebase.testlab.internal.gcloud.TestResult
-import ru.gildor.gradle.firebase.testlab.internal.getArtifactPaths
-import ru.gildor.gradle.firebase.testlab.internal.utils.closureOf
 import java.io.File
 
 class FirebaseTestLabPlugin : Plugin<Project> {
@@ -126,7 +125,7 @@ class FirebaseTestLabPlugin : Plugin<Project> {
     private fun downloadArtifacts(result: TestResult) {
         logger.lifecycle("Artifact downloading started")
         GcloudCliResultDownloader(
-                getArtifactPaths(config),
+                config.artifacts.getArtifactPaths(),
                 File(project.buildDir, RESULT_PATH),
                 File(config.gcloudPath),
                 config.bucketName,

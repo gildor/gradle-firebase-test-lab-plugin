@@ -6,11 +6,11 @@ import ru.gildor.gradle.firebase.testlab.internal.utils.command
 import ru.gildor.gradle.firebase.testlab.internal.utils.startCommand
 import java.io.File
 
-interface TestLabResultDownloader {
+internal interface TestLabResultDownloader {
     fun downloadResult(result: TestResult)
 }
 
-class GcloudCliResultDownloader(
+internal class GcloudCliResultDownloader(
         private val artifacts: List<String>,
         private val destinationDir: File,
         private val gcloudPath: File?,

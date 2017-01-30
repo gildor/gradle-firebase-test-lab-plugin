@@ -1,16 +1,41 @@
 package ru.gildor.gradle.firebase.testlab.internal
 
-import ru.gildor.gradle.firebase.testlab.ArtifactPath
-import ru.gildor.gradle.firebase.testlab.FirebaseTestLabPluginExtension
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-fun getArtifactPaths(config: FirebaseTestLabPluginExtension) = config.artifacts.javaClass
-        .declaredMethods
-        .filter { it.isAnnotationPresent(ArtifactPath::class.java) }
-        .map {
-            if (it.invoke(config.artifacts) == true) {
-                it.getAnnotation(ArtifactPath::class.java).pathWildcard
+interface Artifacts {
+    var junit: Boolean
+    var logcat: Boolean
+    var video: Boolean
+    var instrumentation: Boolean
+
+    fun getArtifactPaths(): List<String>
+}
+
+@Suppress("unused")
+class ArtifactsImpl : Artifacts {
+    override var junit by PathBoolean("test_result_*.xml", true)
+    override var logcat by PathBoolean("logcat")
+    override var video by PathBoolean("video.mp4")
+    override var instrumentation by PathBoolean("instrumentation.results")
+
+    override fun getArtifactPaths() = paths.toList()
+
+    private val paths = mutableListOf<String>()
+
+    class PathBoolean(
+            private var path: String,
+            private var value: Boolean = false
+    ) : ReadWriteProperty<ArtifactsImpl, Boolean> {
+        override fun getValue(thisRef: ArtifactsImpl, property: KProperty<*>) = value
+
+        override fun setValue(thisRef: ArtifactsImpl, property: KProperty<*>, value: Boolean) {
+            this.value = value
+            if (value) {
+                thisRef.paths += path
             } else {
-                null
+                thisRef.paths -= path
             }
         }
-        .filterNotNull()
+    }
+}
