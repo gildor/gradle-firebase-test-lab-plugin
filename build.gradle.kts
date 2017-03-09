@@ -1,50 +1,43 @@
-import com.gradle.publish.PluginBundleExtension
-import org.gradle.script.lang.kotlin.*
-
 group = "ru.gildor.gradle.firebase.testlab"
-version = "0.1.1"
+version = "0.2.0"
+description = "Gradle plugin to run Android instrumentation and robo test on Firebase Test Lab"
 
-buildscript {
-
-    repositories {
-        jcenter()
-        gradleScriptKotlin()
-        maven { setUrl("https://plugins.gradle.org/m2/") }
-    }
-    dependencies {
-        //noinspection DifferentKotlinGradleVersion
-        classpath(kotlinModule("gradle-plugin"))
-        classpath("com.gradle.publish:plugin-publish-plugin:0.9.7")
-    }
-}
-
-apply {
-    plugin("kotlin")
-    plugin("maven")
-    plugin("com.gradle.plugin-publish")
+plugins {
+    `maven-publish`
+    `java-gradle-plugin`
+    id("nebula.kotlin") version "1.1.0"
+    id("com.gradle.plugin-publish") version "0.9.7"
 }
 
 repositories {
     jcenter()
 }
 
-configure<PluginBundleExtension> {
+gradlePlugin {
+    plugins.invoke {
+        "firebaseTestLab" {
+            id = project.name
+            implementationClass = "ru.gildor.gradle.firebase.testlab.FirebaseTestLabPlugin"
+        }
+    }
+}
+
+pluginBundle {
     website = "https://github.com/gildor/gradle-firebase-test-lab-plugin"
-    vcsUrl = "https://github.com/gildor/gradle-firebase-test-lab-plugin.git"
-    description = "Gradle plugin for Firebase Test Lab"
+    vcsUrl = "$website.git"
+    description = project.description
     tags = listOf("firebase", "test-lab", "android", "espresso", "robo")
-    this.plugins {
-        "firebaseTestLabPlugin" {
-            id = "ru.gildor.gradle.firebase.testlab"
+
+    plugins.invoke {
+        "firebaseTestLab" {
+            id = project.group as String
             displayName = "Gradle Firebase Test Lab plugin"
         }
     }
 }
 
 dependencies {
-    compile(gradleApi())
-    compile(kotlinModule("stdlib", "1.0.6"))
     compile(gradleScriptKotlinApi())
-    compileOnly("com.android.tools.build:gradle:2.2.3")
-    testCompile("junit:junit:4.11")
+    compileOnly("com.android.tools.build:gradle:2.3.0")
+    testCompile("junit:junit:4.12")
 }
