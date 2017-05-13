@@ -55,7 +55,7 @@ internal class GcloudCliResultDownloader(
                 .startCommand()
                 .apply {
                     inputStream.bufferedReader().forEachLine { logger?.lifecycle(it) }
-                    errorStream.bufferedReader().forEachLine { logger?.lifecycle(it) }
+                    errorStream.bufferedReader().forEachLine { logger?.error(it) }
                 }
                 .waitFor() == 0
     }

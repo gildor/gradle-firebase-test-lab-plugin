@@ -39,10 +39,10 @@ internal class GcloudCliRunner(
     """.asCommand())
 
     override fun start(): TestResult {
-        val process = processBuilder.start()
+        val process = processBuilder.redirectErrorStream(true).start()
         logger.debug(processBuilder.command().joinToString(" "))
         var resultDir: String? = null
-        process.errorStream.bufferedReader().forEachLine {
+        process.inputStream.bufferedReader().forEachLine {
             logger.lifecycle(it)
             if (it.contains(bucket)) {
                 resultDir = "$bucket\\/(.*)\\/".toRegex().find(it)?.groups?.get(1)?.value
@@ -53,7 +53,6 @@ internal class GcloudCliRunner(
                 }
             }
         }
-        process.inputStream.bufferedReader().forEachLine { logger.lifecycle(it) }
 
         val code = process.waitFor()
 

@@ -25,7 +25,7 @@ apply plugin: 'firebase-test-lab'
 //Configure plugin
 firebaseTestLab {
     // [REQUIRED] Path to Google Cloud SDK CLI tools - https://cloud.google.com/sdk/gcloud/
-    gcloudPath = "/Library/google-cloud-sdk/bin/"
+    gcloudPath = "/Library/google-cloud-sdk/"
     // [REQUIRED] Google Cloud Storage bucket name to keep test results
     bucketName = "android_ci"
     // `false` by default
@@ -82,7 +82,7 @@ apply {
 }
 
 configure<FirebaseTestLabPlugin> {
-    gcloudPath = "/Library/google-cloud-sdk/bin/"
+    gcloudPath = "/Library/google-cloud-sdk/"
     bucketName = "android_ci"
     ignoreFailures = true
     copyArtifact {
@@ -99,6 +99,14 @@ configure<FirebaseTestLabPlugin> {
     }
 }
 ```
+
+## Usage with Android project and Android Gradle Plugin
+
+//TODO:
+
+## Standalone usage
+
+//TODO:
 
 ## Run tests
 To run tests you should use one of plugin tasks

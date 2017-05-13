@@ -14,7 +14,7 @@ interface Artifacts {
 
 @Suppress("unused")
 class ArtifactsImpl : Artifacts {
-    override var junit by PathBoolean("test_result_*.xml", true)
+    override var junit by PathBoolean("test_result_*.xml")
     override var logcat by PathBoolean("logcat")
     override var video by PathBoolean("video.mp4")
     override var instrumentation by PathBoolean("instrumentation.results")
@@ -23,14 +23,24 @@ class ArtifactsImpl : Artifacts {
 
     private val paths = mutableListOf<String>()
 
-    class PathBoolean(
-            private var path: String,
-            private var value: Boolean = false
+    init {
+        //Values by default
+        junit = true
+    }
+
+    private class PathBoolean(
+            private var path: String
     ) : ReadWriteProperty<ArtifactsImpl, Boolean> {
+        private var value: Boolean = false
+
         override fun getValue(thisRef: ArtifactsImpl, property: KProperty<*>) = value
 
         override fun setValue(thisRef: ArtifactsImpl, property: KProperty<*>, value: Boolean) {
             this.value = value
+            updatePaths(thisRef, value)
+        }
+
+        private fun updatePaths(thisRef: ArtifactsImpl, value: Boolean) {
             if (value) {
                 thisRef.paths += path
             } else {
