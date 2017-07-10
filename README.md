@@ -14,8 +14,13 @@ This is experimental Gradle plugin for [Firebase Test Lab](https://firebase.goog
 ```groovy
 //Add dependency to your build script
 buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
     dependencies {
-        classpath "ru.gildor.gradle.firebase.testlab:firebase-test-lab:$TEST_LAB_PLUGIN_VERSION"
+        classpath "gradle.plugin.ru.gildor.gradle.firebase.testlab:firebase-test-lab:0.1.1"
     }
 }
 
