@@ -50,6 +50,8 @@ firebaseTestLab {
         video = false
         // Test results in test lab format (plain text log file)
         instrumentation = false
+        // Artifacts specified via --directories-to-pull
+        artifacts = false
     }
     // Configuration of your matrices. Plugin creates 2 tasks for each matrix (for instrumentation and robo tests)
     matrices {

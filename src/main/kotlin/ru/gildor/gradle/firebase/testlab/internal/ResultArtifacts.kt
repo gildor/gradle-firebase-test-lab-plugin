@@ -8,6 +8,7 @@ interface Artifacts {
     var logcat: Boolean
     var video: Boolean
     var instrumentation: Boolean
+    var artifacts: Boolean
 
     fun getArtifactPaths(): List<String>
 }
@@ -18,6 +19,7 @@ class ArtifactsImpl : Artifacts {
     override var logcat by PathBoolean("logcat")
     override var video by PathBoolean("video.mp4")
     override var instrumentation by PathBoolean("instrumentation.results")
+    override var artifacts by PathBoolean("artifacts")
 
     override fun getArtifactPaths() = paths.toList()
 
